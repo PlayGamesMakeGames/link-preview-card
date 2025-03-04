@@ -21,6 +21,7 @@ export class LinkPreviewCard extends DDDSuper(I18NMixin(LitElement)) {
   constructor() {
     super();
     this.title = "";
+    this.link = "https://www.youtube.com/watch?v=tKR_l79txOU";
     this.t = this.t || {};
     this.t = {
       ...this.t,
@@ -40,6 +41,7 @@ export class LinkPreviewCard extends DDDSuper(I18NMixin(LitElement)) {
     return {
       ...super.properties,
       title: { type: String },
+      link: { type: String },
     };
   }
 
@@ -67,8 +69,12 @@ export class LinkPreviewCard extends DDDSuper(I18NMixin(LitElement)) {
   render() {
     return html`
 <div class="wrapper">
-  <h3><span>${this.t.title}:</span> ${this.title}</h3>
-  <slot></slot>
+  <!-- link -->
+  <a href="${this.link}"><slot name="linkSlot">${this.link}</slot></a>
+  <!-- card that appears below link -->
+  <div class="card">
+
+  </div>
 </div>`;
   }
 
