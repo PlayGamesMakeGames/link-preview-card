@@ -22,6 +22,10 @@ export class LinkPreviewCard extends DDDSuper(I18NMixin(LitElement)) {
     super();
     this.title = "";
     this.link = "https://www.youtube.com/watch?v=tKR_l79txOU";
+    this.jsonTitle = "";
+    this.jsonDesc = "";
+    this.jsonImg = "";
+    this.jsonLink = "";
     this.t = this.t || {};
     this.t = {
       ...this.t,
@@ -41,7 +45,11 @@ export class LinkPreviewCard extends DDDSuper(I18NMixin(LitElement)) {
     return {
       ...super.properties,
       title: { type: String },
-      link: { type: String },
+      link: { type: String, Reflect},
+      jsonTitle: { type: String },
+      jsonDesc: { type: String },
+      jsonImg: { type: String },
+      jsonLink: { type: String },
     };
   }
 
@@ -62,7 +70,49 @@ export class LinkPreviewCard extends DDDSuper(I18NMixin(LitElement)) {
       h3 span {
         font-size: var(--link-preview-card-label-font-size, var(--ddd-font-size-s));
       }
+      .textField{
+        display: flex;
+        width: 512px;
+        height: 128px;
+        /* margin: var(--ddd-spacing-x(16)); */
+      }
     `];
+  }
+
+  //fetch JSON of link and update variables we're looking for with info if it exists
+  async getData(link) {
+    const url = `https://open-apis.hax.cloud/api/services/website/metadata?q=${this.link}`;
+    try {
+      const response = await fetch(url);
+      if (!response.ok) {
+        throw new Error(`Response status: ${response.status}`);
+      }
+
+      const json = await response.json();
+      console.log(json.data);
+      // document.querySelector('#here').innerHTML = JSON.stringify(json.data, null, 2); //dont think I need this line
+      this.jsonTitle = json.data["title"];
+      this.jsonDesc = json.data["description"];
+      this.jsonImg = json.data["image"];
+      this.jsonLink = json.data["url"];
+    } catch (error) {
+      console.error(error.message);
+    }
+    console.log(this.jsonTitle);
+    console.log(this.jsonDesc);
+    console.log(this.jsonImg);
+    console.log(this.jsonLink);
+  }
+
+  updated(changedProperties) {
+    if (super.updated) {
+      super.updated(changedProperties);
+    }
+    //if paste detected update link in a different method(TODO), make sure link is valid, and call method with newly updated link
+    if (changedProperties.has('link')) {
+      //check if new link valid TODO
+      this.getData(this.link);
+    }
   }
 
   // Lit render the HTML
@@ -71,6 +121,7 @@ export class LinkPreviewCard extends DDDSuper(I18NMixin(LitElement)) {
 <div class="wrapper">
   <!-- link -->
   <a href="${this.link}"><slot name="linkSlot">${this.link}</slot></a>
+  <textarea class="textField">Input text here</textarea>
   <!-- card that appears below link -->
   <div class="card">
 
