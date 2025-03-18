@@ -21,11 +21,13 @@ export class LinkPreviewCard extends DDDSuper(I18NMixin(LitElement)) {
   constructor() {
     super();
     this.title = "";
+    this.textValue = "Paste a link in me";
     this.link = ""; //https://www.youtube.com/watch?v=tKR_l79txOU
     this.jsonTitle = "";
     this.jsonDesc = "";
     this.jsonImg = "";
     this.jsonLink = "";
+    this.loadingState = false;
     this.t = this.t || {};
     this.t = {
       ...this.t,
@@ -45,11 +47,13 @@ export class LinkPreviewCard extends DDDSuper(I18NMixin(LitElement)) {
     return {
       ...super.properties,
       title: { type: String },
+      textValue: { type: String},
       link: { type: String, Reflect},
       jsonTitle: { type: String },
       jsonDesc: { type: String },
       jsonImg: { type: String },
       jsonLink: { type: String },
+      loadingState: { type: Boolean, Reflect, attribute:"loading-state"}
     };
   }
 
@@ -86,11 +90,26 @@ export class LinkPreviewCard extends DDDSuper(I18NMixin(LitElement)) {
         opacity: 0;
         pointer-events: none;
       }
+      .loader {
+      border: 16px solid #f3f3f3; /* Light grey */
+      border-top: 16px solid #3498db; /* Blue */
+      border-radius: 50%;
+      width: 120px;
+      height: 120px;
+      animation: spin 2s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
     `];
   }
 
   //fetch JSON of link and update variables we're looking for with info if it exists
   async getData(link) {
+    this.loadingState = true;
     const url = `https://open-apis.hax.cloud/api/services/website/metadata?q=${link}`;
     try {
       const response = await fetch(url);
@@ -115,6 +134,9 @@ export class LinkPreviewCard extends DDDSuper(I18NMixin(LitElement)) {
       console.error(error.message);
       return false;
     }
+    finally{
+      this.loadingState = false;
+    }
   }
 
   //updates this.link when a paste event occurs in the text field
@@ -123,6 +145,7 @@ export class LinkPreviewCard extends DDDSuper(I18NMixin(LitElement)) {
     this.jsonDesc = "";
     this.jsonImg = "";
     this.jsonLink = "";
+    this.textValue = event.value;
     this.link = event.clipboardData.getData("text");
     console.log(this.link);
     //tried doing the card creation here but couldn't get bool to update slow enough to wait for async func to be done
@@ -175,11 +198,15 @@ export class LinkPreviewCard extends DDDSuper(I18NMixin(LitElement)) {
   render() {
     return html`
 <div class="wrapper">
+  
   <!-- link -->
+  ${this.loadingState ? html`<div class="loader"></div>` : html``}
+  
   <!-- <a href="${this.link}"><slot name="linkSlot">${this.link}</slot></a> -->
-  <textarea class="textField" id="textFieldid" @paste="${this.updateLink}">Paste a link in me</textarea>
+  <!-- MOVE TEXTAREA TO INDEX, DETECT A PASTE EVENT ON THE TEXTAREA, HAVE THAT CALL A METHOD THAT DOCUMENT.CREATECOMPONENT?(LINK-PREVIEW-CARD) AS A CHILD OF TEXTAREA -->
+  <textarea class="textField" id="textFieldid" @paste="${this.updateLink}" style="display: ${this.loadingState ? 'none' : 'block'};">${this.textValue}</textarea>
   <!-- card that appears below link maybe set initially to disabled, enable when valid link? -->
-  <div class="card cardInvis">
+  <div class="card cardInvis" style="display: ${this.loadingState ? 'none' : 'block'};">
     I'm a card, maybe I'll be attached to textarea in final version! <br>
     title: ${this.jsonTitle} <br>
     description: ${this.jsonDesc} <br>
