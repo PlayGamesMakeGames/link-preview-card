@@ -28,6 +28,12 @@
       background-color: var(--ddd-accent-2);
       color: var(--ddd-primary-17);
     }
+    .textField{
+        display: flex;
+        width: 512px;
+        height: 128px;
+        /* margin: var(--ddd-spacing-x(16)); */
+      }
   </style>
   <title>link-preview-card</title>
 </head>
@@ -37,14 +43,19 @@
     <h1>link-preview-card</h1>
     <!-- this is going to do whatever the tag's defaults are -->
     <h2>Default</h2>
-    <textarea class="textField" id="textFieldid" @paste="${this.addLinkPreviewCard}">paste a link in me</textarea>
-    <link-preview-card></link-preview-card>
+    <textarea class="textField" id="textFieldid">paste a link in me</textarea>
+    <link-preview-card id="bound"></link-preview-card>
     <h2>Slot usage</h2>
     <link-preview-card data-accent="2" data-primary="17"><div slot="linkSlot">YIPPIEEEE - https://www.youtube.com/watch?v=tKR_l79txOU</div></link-preview-card>
     <h2>Property usage YIPPIEEEE - https://www.youtube.com/watch?v=tKR_l79txOU</h2>
     <link-preview-card id="example" title="Sample property title"></link-preview-card>
   </div>
   <script type="module" src="./link-preview-card.js"></script>
+  <script>
+    document.querySelector('#textFieldid').addEventListener('input', function() {
+      document.querySelector('#bound').link = document.querySelector('#textFieldid').value;
+    });
+  </script>
 
   <!-- Take HAX, the Web and you further down the rabbit hole
   <style>

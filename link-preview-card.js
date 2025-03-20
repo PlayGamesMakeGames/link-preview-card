@@ -87,7 +87,8 @@ export class LinkPreviewCard extends DDDSuper(I18NMixin(LitElement)) {
         pointer-events: all;
       }
       .cardInvis{
-        opacity: 0;
+        display: none;
+        /* opacity: 0; */
         pointer-events: none;
       }
       .loader {
@@ -177,10 +178,10 @@ export class LinkPreviewCard extends DDDSuper(I18NMixin(LitElement)) {
       super.updated(changedProperties);
     }
     //if link changes (on paste - updateLink() called) this gets called, check link is valid, and enable card in textarea
-    if (changedProperties.has('link')) {
+    if (changedProperties.has('link') && this.link != "") {
       this.getData(this.link);
       console.log("gotdata from new link");
-      //check if new link valid
+      //check if new link valid NEED TO FIX THIS NOW THAT LINK IS BEING CONSTANTLY UPDATED
       if(this.isValidURL(this.link)){
         console.log("Validddd");
         //build card for textarea (could just enable card that is initially disabled orrrr create a new card object entirely?)
@@ -204,7 +205,7 @@ export class LinkPreviewCard extends DDDSuper(I18NMixin(LitElement)) {
   
   <!-- <a href="${this.link}"><slot name="linkSlot">${this.link}</slot></a> -->
   <!-- MOVE TEXTAREA TO INDEX, DETECT A PASTE EVENT ON THE TEXTAREA, HAVE THAT CALL A METHOD THAT DOCUMENT.CREATECOMPONENT?(LINK-PREVIEW-CARD) AS A CHILD OF TEXTAREA -->
-  <textarea class="textField" id="textFieldid" @paste="${this.updateLink}" style="display: ${this.loadingState ? 'none' : 'block'};">${this.textValue}</textarea>
+  <!-- <textarea class="textField" id="textFieldid" @paste="${this.updateLink}" style="display: ${this.loadingState ? 'none' : 'block'};">${this.textValue}</textarea> -->
   <!-- card that appears below link maybe set initially to disabled, enable when valid link? -->
   <div class="card cardInvis" style="display: ${this.loadingState ? 'none' : 'block'};">
     I'm a card, maybe I'll be attached to textarea in final version! <br>
