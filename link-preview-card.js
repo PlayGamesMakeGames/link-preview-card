@@ -88,8 +88,10 @@ export class LinkPreviewCard extends DDDSuper(I18NMixin(LitElement)) {
       }
       .cardInvis{
         display: none;
-        /* opacity: 0; */
+        opacity: 0;
         pointer-events: none;
+        height: 0px;
+        width: 0px;
       }
       .loader {
       border: 16px solid #f3f3f3; /* Light grey */
@@ -98,6 +100,10 @@ export class LinkPreviewCard extends DDDSuper(I18NMixin(LitElement)) {
       width: 120px;
       height: 120px;
       animation: spin 2s linear infinite;
+    }
+    #cardImgid{
+      max-width: 512px;
+      max-height: 256px;
     }
 
     @keyframes spin {
@@ -208,11 +214,10 @@ export class LinkPreviewCard extends DDDSuper(I18NMixin(LitElement)) {
   <!-- <textarea class="textField" id="textFieldid" @paste="${this.updateLink}" style="display: ${this.loadingState ? 'none' : 'block'};">${this.textValue}</textarea> -->
   <!-- card that appears below link maybe set initially to disabled, enable when valid link? -->
   <div class="card cardInvis" style="display: ${this.loadingState ? 'none' : 'block'};">
-    I'm a card, maybe I'll be attached to textarea in final version! <br>
-    title: ${this.jsonTitle} <br>
-    description: ${this.jsonDesc} <br>
-    image: <img src=${this.jsonImg}> <br>
-    link: <a href="${this.jsonLink}">${this.jsonLink}</a>
+    Title: ${this.jsonTitle} <br>
+    <img src=${this.jsonImg} id="cardImgid"> <br>
+    Description: ${this.jsonDesc} <br>
+    Link: <a href="${this.jsonLink}">${this.jsonLink}</a>
   </div>
 </div>`;
   }
