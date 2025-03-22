@@ -45,10 +45,10 @@
     <h2>Default</h2>
     <textarea class="textField" id="textFieldid" placeholder="paste a link in me"></textarea>
     <link-preview-card id="bound"></link-preview-card>
-    <h2>Slot usage</h2>
-    <link-preview-card data-accent="2" data-primary="17"><div slot="linkSlot">YIPPIEEEE - https://www.youtube.com/watch?v=tKR_l79txOU</div></link-preview-card>
+    <!-- <h2>Slot usage</h2>
+    <link-preview-card data-accent="2" data-primary="17"><div slot="linkSlot">YIPPIEEEE - https://www.youtube.com/watch?v=tKR_l79txOU</div></link-preview-card> -->
     <h2>Property usage YIPPIEEEE - https://www.youtube.com/watch?v=tKR_l79txOU</h2>
-    <link-preview-card id="example" title="Sample property title"></link-preview-card>
+    <!-- <link-preview-card id="example" title="Sample property title"></link-preview-card> -->
   </div>
   <script type="module" src="./link-preview-card.js"></script>
   <script>
@@ -56,14 +56,14 @@
     console.log(prevLink);
     document.querySelector('#textFieldid').addEventListener('input', function() {
       //if cur pasted link is not same as prevlink update it and reset prevlink to curlink, if it is the same, leave it
-      console.log(prevLink);
-      if(document.querySelector('#bound').link != prevLink){
-        prevLink = document.querySelector('#bound').link;
+      // console.log(prevLink);
+      // if(document.querySelector('#bound').link != prevLink){
+      //   prevLink = document.querySelector('#bound').link;
         document.querySelector('#bound').link = document.querySelector('#textFieldid').value;
-      }
-      else{
-        prevLink = document.querySelector('#bound').link;
-      }
+      // }
+      // else{
+      //   prevLink = document.querySelector('#bound').link;
+      // }
       
       
       // document.querySelector('#bound').link = e.clipboardData.getData("text");

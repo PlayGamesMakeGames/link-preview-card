@@ -21,12 +21,13 @@ export class LinkPreviewCard extends DDDSuper(I18NMixin(LitElement)) {
   constructor() {
     super();
     this.title = "";
-    this.textValue = "Paste a link in me";
+    this.textValue = "";
     this.link = ""; //https://www.youtube.com/watch?v=tKR_l79txOU
     this.jsonTitle = "";
     this.jsonDesc = "";
     this.jsonImg = "";
     this.jsonLink = "";
+    this.jsonThemeColor = "";
     this.loadingState = false;
     this.t = this.t || {};
     this.t = {
@@ -48,12 +49,13 @@ export class LinkPreviewCard extends DDDSuper(I18NMixin(LitElement)) {
       ...super.properties,
       title: { type: String },
       textValue: { type: String},
-      link: { type: String, Reflect},
+      link: { type: String, reflect: true},
       jsonTitle: { type: String },
       jsonDesc: { type: String },
       jsonImg: { type: String },
       jsonLink: { type: String },
-      loadingState: { type: Boolean, Reflect, attribute:"loading-state"}
+      loadingState: { type: Boolean, reflect: true, attribute:"loading-state"},
+      jsonThemeColor: { type: String, reflect: true },
     };
   }
 
@@ -105,6 +107,12 @@ export class LinkPreviewCard extends DDDSuper(I18NMixin(LitElement)) {
       max-width: 512px;
       max-height: 256px;
     }
+    .card.default {
+      color: gray;
+    }
+    .card.themecolor {
+      color: var(--theme-color);
+    }
 
     @keyframes spin {
       0% { transform: rotate(0deg); }
@@ -132,10 +140,13 @@ export class LinkPreviewCard extends DDDSuper(I18NMixin(LitElement)) {
       this.jsonDesc = json.data[Object.keys(json.data).filter(key => key.toLowerCase().includes("description"))[0]];
       this.jsonImg = json.data[Object.keys(json.data).filter(key => key.toLowerCase().includes("image"))[0]];
       this.jsonLink = json.data[Object.keys(json.data).filter(key => key.toLowerCase().includes("url"))[0]];
+      this.jsonThemeColor = json.data[Object.keys(json.data).filter(key => key.toLowerCase().includes("theme-color"))[0]];
       console.log(this.jsonTitle);
       console.log(this.jsonDesc);
       console.log(this.jsonImg);
       console.log(this.jsonLink);
+      console.log(this.jsonThemeColor);
+      this.style.setProperty('--theme-color', this.jsonThemeColor || 'gray');
       return true;
     } catch (error) {
       console.error(error.message);
@@ -146,12 +157,13 @@ export class LinkPreviewCard extends DDDSuper(I18NMixin(LitElement)) {
     }
   }
 
-  //updates this.link when a paste event occurs in the text field
+  //updates this.link when a paste event occurs in the text field  NOT BEING USED ANYMORE
   updateLink(event){
     this.jsonTitle = "";
     this.jsonDesc = "";
     this.jsonImg = "";
     this.jsonLink = "";
+    this.jsonThemeColor = "";
     this.textValue = event.value;
     this.link = event.clipboardData.getData("text");
     console.log(this.link);
@@ -172,7 +184,7 @@ export class LinkPreviewCard extends DDDSuper(I18NMixin(LitElement)) {
 
   isValidURL(string) {
     try {
-      new URL(string);
+      console.log(new URL(string));
       return true;
     } catch (error) {
       return false;
@@ -192,13 +204,27 @@ export class LinkPreviewCard extends DDDSuper(I18NMixin(LitElement)) {
         console.log("Validddd");
         //build card for textarea (could just enable card that is initially disabled orrrr create a new card object entirely?)
         this.shadowRoot.querySelector(".card").classList.remove("cardInvis");
+        this.shadowRoot.querySelector(".card").classList.remove("default");
+        this.shadowRoot.querySelector(".card").classList.add("themecolor");
+        // this.style.setProperty('--theme-color', this.jsonThemeColor || 'gray');
         // this.shadowRoot.querySelector(".wrapper").append(this.shadowRoot.querySelector(".card").cloneNode(true)); - if I want to add the card obj instead of just turning it invis
       }
       else{
         console.log("invaliddddd");
+        // this.jsonTitle = "";
+        // this.jsonDesc = "";
+        // this.jsonImg = "";
+        // this.jsonLink = "";
+        // this.jsonThemeColor = "";
         this.shadowRoot.querySelector(".card").classList.add("cardInvis");
+        this.shadowRoot.querySelector(".card").classList.add("default");
+        this.shadowRoot.querySelector(".card").classList.remove("themecolor");
       }
     }
+
+    // if (changedProperties.has('textValue') && this.textValue != ""){ Think ab this guy for trying to fix link being constantly updated, only should update on a paste event
+    //   this.link = this.textValue;
+    // }
   }
 
   // Lit render the HTML
@@ -213,7 +239,7 @@ export class LinkPreviewCard extends DDDSuper(I18NMixin(LitElement)) {
   <!-- MOVE TEXTAREA TO INDEX, DETECT A PASTE EVENT ON THE TEXTAREA, HAVE THAT CALL A METHOD THAT DOCUMENT.CREATECOMPONENT?(LINK-PREVIEW-CARD) AS A CHILD OF TEXTAREA -->
   <!-- <textarea class="textField" id="textFieldid" @paste="${this.updateLink}" style="display: ${this.loadingState ? 'none' : 'block'};">${this.textValue}</textarea> -->
   <!-- card that appears below link maybe set initially to disabled, enable when valid link? -->
-  <div class="card cardInvis" style="display: ${this.loadingState ? 'none' : 'block'};">
+  <div class="card cardInvis ${this.themeColor ? 'themecolor' : 'default'}" style="display: ${this.loadingState ? 'none' : 'block'};">
     Title: ${this.jsonTitle} <br>
     <img src=${this.jsonImg} id="cardImgid"> <br>
     Description: ${this.jsonDesc} <br>
