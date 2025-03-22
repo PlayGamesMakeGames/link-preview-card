@@ -28,6 +28,7 @@ export class LinkPreviewCard extends DDDSuper(I18NMixin(LitElement)) {
     this.jsonImg = "";
     this.jsonLink = "";
     this.jsonThemeColor = "";
+    document.documentElement.style.setProperty('--ddd-primary-x', `var(--ddd-primary-${Math.floor(Math.random() * 26)})`);
     this.loadingState = false;
     this.t = this.t || {};
     this.t = {
@@ -56,6 +57,7 @@ export class LinkPreviewCard extends DDDSuper(I18NMixin(LitElement)) {
       jsonLink: { type: String },
       loadingState: { type: Boolean, reflect: true, attribute:"loading-state"},
       jsonThemeColor: { type: String, reflect: true },
+      randNum: {type: Number},
     };
   }
 
@@ -90,7 +92,7 @@ export class LinkPreviewCard extends DDDSuper(I18NMixin(LitElement)) {
       }
       .cardInvis{
         display: none;
-        opacity: 0;
+        /* opacity: 0; */
         pointer-events: none;
         height: 0px;
         width: 0px;
@@ -107,8 +109,11 @@ export class LinkPreviewCard extends DDDSuper(I18NMixin(LitElement)) {
       max-width: 512px;
       max-height: 256px;
     }
+    .card.psucolor {
+      color: var(--ddd-primary-2); //nittany navy if psu based domain
+    }
     .card.default {
-      color: gray;
+      color: var(--ddd-primary-x); //rand color between 0 and 25, set in constructor
     }
     .card.themecolor {
       color: var(--theme-color);
@@ -140,7 +145,7 @@ export class LinkPreviewCard extends DDDSuper(I18NMixin(LitElement)) {
       this.jsonDesc = json.data[Object.keys(json.data).filter(key => key.toLowerCase().includes("description"))[0]];
       this.jsonImg = json.data[Object.keys(json.data).filter(key => key.toLowerCase().includes("image"))[0]];
       this.jsonLink = json.data[Object.keys(json.data).filter(key => key.toLowerCase().includes("url"))[0]];
-      this.jsonThemeColor = json.data[Object.keys(json.data).filter(key => key.toLowerCase().includes("theme-color"))[0]];
+      this.jsonThemeColor = json.data[Object.keys(json.data).filter(key => key.toLowerCase().includes("color"))[0]];
       console.log(this.jsonTitle);
       console.log(this.jsonDesc);
       console.log(this.jsonImg);
@@ -204,8 +209,17 @@ export class LinkPreviewCard extends DDDSuper(I18NMixin(LitElement)) {
         console.log("Validddd");
         //build card for textarea (could just enable card that is initially disabled orrrr create a new card object entirely?)
         this.shadowRoot.querySelector(".card").classList.remove("cardInvis");
-        this.shadowRoot.querySelector(".card").classList.remove("default");
-        this.shadowRoot.querySelector(".card").classList.add("themecolor");
+        //if psu based then make color nittany navy, else theme color exists so use that, else link is invalid so use random default color
+        if(this.link.toLowerCase().includes("psu.edu")){
+          this.shadowRoot.querySelector(".card").classList.remove("default");
+          this.shadowRoot.querySelector(".card").classList.add("psucolor");
+          this.shadowRoot.querySelector(".card").classList.remove("themecolor");
+        }
+        else{
+          this.shadowRoot.querySelector(".card").classList.remove("default");
+          this.shadowRoot.querySelector(".card").classList.remove("psucolor");
+          this.shadowRoot.querySelector(".card").classList.add("themecolor");
+        }
         // this.style.setProperty('--theme-color', this.jsonThemeColor || 'gray');
         // this.shadowRoot.querySelector(".wrapper").append(this.shadowRoot.querySelector(".card").cloneNode(true)); - if I want to add the card obj instead of just turning it invis
       }
@@ -219,6 +233,7 @@ export class LinkPreviewCard extends DDDSuper(I18NMixin(LitElement)) {
         this.shadowRoot.querySelector(".card").classList.add("cardInvis");
         this.shadowRoot.querySelector(".card").classList.add("default");
         this.shadowRoot.querySelector(".card").classList.remove("themecolor");
+        this.shadowRoot.querySelector(".card").classList.remove("psucolor");
       }
     }
 
