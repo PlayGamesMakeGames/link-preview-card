@@ -16,38 +16,55 @@
       margin: var(--ddd-spacing-2);
     }
     link-preview-card {
-      margin: var(--ddd-spacing-2);
+      /* margin: var(--ddd-spacing-2);
       border: var(--ddd-border-md);
-      border-radius: var(--ddd-radius-lg);
+      border-radius: var(--ddd-radius-lg); */
     }
     link-preview-card:hover {
-      box-shadow: var(--ddd-boxShadow-sm);
+      /* box-shadow: var(--ddd-boxShadow-sm); */
     }
     #example {
       --link-preview-card-font-size: var(--ddd-font-size-l);
-      background-color: var(--ddd-accent-2);
-      color: var(--ddd-primary-17);
+      /* background-color: var(--ddd-accent-2); */
+      /* color: var(--ddd-primary-17); */
     }
     .textField{
         display: flex;
         width: 512px;
         height: 32px;
+        padding: var(--ddd-spacing-2);
         /* margin: var(--ddd-spacing-x(16)); */
       }
+    @media(max-width: 512px){
+      .textField{
+        width: 360px;
+        height: 32px;
+      }
+    }
   </style>
   <title>link-preview-card</title>
 </head>
 
 <body>
   <div id="demo">
-    <h1>link-preview-card</h1>
-    <!-- this is going to do whatever the tag's defaults are -->
-    <h2>Default</h2>
-    <textarea class="textField" id="textFieldid" placeholder="paste a link in me"></textarea>
-    <link-preview-card id="bound"></link-preview-card>
+    <h1>Link-Preview-Card</h1>
+    <h3>Paste a link in an empty text area and a card with some basic info will appear!</h3>
+    <!-- Create a textarea and bind a link-preview-card webcomponent to it to use this webcomponent -->
+    
+    <textarea class="textField" id="textFieldid2" placeholder="paste a link in me">https://www.w3schools.com/howto/howto_css_loader.asp</textarea>
+    <link-preview-card id="bound2" link="https://www.w3schools.com/howto/howto_css_loader.asp"></link-preview-card>
+    <textarea class="textField" id="textFieldid3" placeholder="paste a link in me">https://github.com/PlayGamesMakeGames/link-preview-card</textarea>
+    <link-preview-card id="bound3" link="https://github.com/PlayGamesMakeGames/link-preview-card"></link-preview-card>
+    <textarea class="textField" id="textFieldid" placeholder="paste a link in me">https://www.youtube.com/watch?v=tKR_l79txOU</textarea>
+    <link-preview-card id="bound" link="https://www.youtube.com/watch?v=tKR_l79txOU"></link-preview-card>
+    <textarea class="textField" id="textFieldid4" placeholder="paste a link in me">https://iam.hax.psu.edu/tjl6022/</textarea>
+    <link-preview-card id="bound4" link="https://iam.hax.psu.edu/tjl6022/"></link-preview-card>
+    <h3>No preset link example</h3>
+    <textarea class="textField" id="textFieldid5" placeholder="paste a link in me"></textarea>
+    <link-preview-card id="bound5" link=""></link-preview-card>
     <!-- <h2>Slot usage</h2>
     <link-preview-card data-accent="2" data-primary="17"><div slot="linkSlot">YIPPIEEEE - https://www.youtube.com/watch?v=tKR_l79txOU</div></link-preview-card> -->
-    <h2>Property usage YIPPIEEEE - https://www.youtube.com/watch?v=tKR_l79txOU</h2>
+    <!-- <h2>Property usage YIPPIEEEE - https://www.youtube.com/watch?v=tKR_l79txOU</h2> -->
     <!-- <link-preview-card id="example" title="Sample property title"></link-preview-card> -->
   </div>
   <script type="module" src="./link-preview-card.js"></script>
@@ -67,6 +84,18 @@
       
       
       // document.querySelector('#bound').link = e.clipboardData.getData("text");
+    });
+    document.querySelector('#textFieldid2').addEventListener('input', function() {
+        document.querySelector('#bound2').link = document.querySelector('#textFieldid2').value;
+    });
+    document.querySelector('#textFieldid3').addEventListener('input', function() {
+        document.querySelector('#bound3').link = document.querySelector('#textFieldid3').value;
+    });
+    document.querySelector('#textFieldid4').addEventListener('input', function() {
+        document.querySelector('#bound4').link = document.querySelector('#textFieldid4').value;
+    });
+    document.querySelector('#textFieldid5').addEventListener('input', function() {
+        document.querySelector('#bound5').link = document.querySelector('#textFieldid5').value;
     });
   </script>
 
